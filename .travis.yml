@@ -1,5 +1,14 @@
 language: cpp
 
+addons: 
+  apt:
+    packages:
+      - ninja-build
+  homebrew:
+    update: true
+    packages:
+      - ninja
+      
 matrix:
   include:
     - os: linux
@@ -7,9 +16,8 @@ matrix:
     - os: linux
       dist: bionic
     - os: windows
+      install: choco install ninja
     - os: osx
-      before_install:
-        - uname -r
 
 script:
   - cmake --version
