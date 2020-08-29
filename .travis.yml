@@ -1,0 +1,18 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+    - os: linux
+      dist: bionic
+    - os: windows
+    - os: osx
+      before_install:
+        - uname -r
+
+script:
+  - cmake --version
+  - ninja --version
+  - cmake -GNinja
+  - cmake --build .
