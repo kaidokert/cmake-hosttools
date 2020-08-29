@@ -20,6 +20,7 @@ jobs:
             platform: macos
           - os: ubuntu-latest
             platform: android-on-linux
+            name: Android NDK
     steps:
     - uses: actions/checkout@v2
 
