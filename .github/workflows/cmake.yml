@@ -13,8 +13,13 @@ jobs:
         buildtype: [Debug]
         include:
           - os: windows-latest
+            platform: windows
           - os: ubuntu-latest
+            platform: linux
           - os: macos-latest
+            platform: macos
+          - os: ubuntu-latest
+            platform: android-on-linux
     steps:
     - uses: actions/checkout@v2
 
