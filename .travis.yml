@@ -5,6 +5,7 @@ addons:
     packages:
       - ninja-build
   homebrew:
+    update: true # Sloooow
     packages:
       - ninja
       
