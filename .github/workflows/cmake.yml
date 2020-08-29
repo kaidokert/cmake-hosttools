@@ -45,10 +45,10 @@ jobs:
       working-directory: ${{runner.workspace}}/build
       run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Configure CMake ( croww )
+    - name: Configure CMake ( cross )
       if: ${{ startsWith(matrix.platform, 'android') }}
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE CMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21  -DCMAKE_ANDROID_NDK=android-ndk-r21d-linux-x86_64
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21  -DCMAKE_ANDROID_NDK=android-ndk-r21d-linux-x86_64
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
