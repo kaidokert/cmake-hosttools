@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    name: ${{ matrix.os }} - ${{ matrix.buildtype }}
+    name: ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -20,7 +20,6 @@ jobs:
             platform: macos
           - os: ubuntu-latest
             platform: android-on-linux
-            name: Android NDK
             ndkversion: android-ndk-r21d
           - os: ubuntu-latest
             platform: raspberry-on-linux
