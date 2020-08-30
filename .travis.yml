@@ -11,13 +11,13 @@ addons:
       
 matrix:
   include:
-    #- os: linux
-    #  dist: xenial
+    - os: linux
+      dist: xenial
     - os: linux
       dist: bionic
-    #- os: windows
-    #  install: choco install ninja
-    #- os: osx
+    - os: windows
+      install: choco install ninja
+    - os: osx
 
 script:
   - cmake --version
