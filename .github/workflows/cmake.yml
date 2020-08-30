@@ -44,6 +44,7 @@ jobs:
       run: |
           git clone https://github.com/raspberrypi/tools raspi-tools
           ls -la raspi-tools
+          ls -la ${{github.workspace}}/raspi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
@@ -61,7 +62,7 @@ jobs:
     - name: Configure CMake ( cross, Raspberry )
       if: ${{ startsWith(matrix.platform, 'raspberry') }}
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_CXX_COMPILER={{github.workspace}}/raspi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_CXX_COMPILER=${{github.workspace}}/raspi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
