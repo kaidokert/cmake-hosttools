@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         buildtype: [Debug]
-        platform: []
+        platform: [android-on-linux]
         include:
           - os: windows-latest
             platform: windows
