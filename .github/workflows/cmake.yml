@@ -9,21 +9,45 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         buildtype: [Debug]
+        platform: [android-on-linux]
         include:
           - os: windows-latest
+            platform: windows
           - os: ubuntu-latest
+            platform: linux
           - os: macos-latest
+            platform: macos
+          - os: ubuntu-latest
+            platform: android-on-linux
+            name: Android NDK
+            ndkversion: android-ndk-r21d
     steps:
     - uses: actions/checkout@v2
 
+    - uses: actions/setup-java@v1
+      if: ${{ startsWith(matrix.platform, 'android') }}
+      with:
+        java-version: 8
+
+    - name: Setup NDK
+      if: ${{ startsWith(matrix.platform, 'android') }}
+      run: |
+          wget -q https://dl.google.com/android/repository/${{ matrix.ndkversion }}-linux-x86_64.zip
+          unzip -qq ${{ matrix.ndkversion }}-linux-x86_64.zip
+          
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
 
-    - name: Configure CMake
+    - name: Configure CMake ( native )
+      if: ${{ !startsWith(matrix.platform, 'android') }}
       working-directory: ${{runner.workspace}}/build
       run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+
+    - name: Configure CMake ( cross )
+      if: ${{ startsWith(matrix.platform, 'android') }}
+      working-directory: ${{runner.workspace}}/build
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21  -DCMAKE_ANDROID_NDK=${{github.workspace}}/${{ matrix.ndkversion }}
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
