@@ -22,6 +22,9 @@ jobs:
             platform: android-on-linux
             name: Android NDK
             ndkversion: android-ndk-r21d
+          - os: ubuntu-latest
+            platform: raspberry-on-linux
+            name: Raspbian
     steps:
     - uses: actions/checkout@v2
 
@@ -35,19 +38,30 @@ jobs:
       run: |
           wget -q https://dl.google.com/android/repository/${{ matrix.ndkversion }}-linux-x86_64.zip
           unzip -qq ${{ matrix.ndkversion }}-linux-x86_64.zip
-          
+
+    - name: Setup Raspi toolchain
+      if: ${{ startsWith(matrix.platform, 'raspberry') }}
+      run: |
+          git clone https://github.com/raspberrypi/tools raspi-tools
+          ls -la raspi-tools
+
     - name: Create Build Environment
       run: cmake -E make_directory ${{runner.workspace}}/build
 
     - name: Configure CMake ( native )
-      if: ${{ !startsWith(matrix.platform, 'android') }}
+      if: ${{ !startsWith(matrix.platform, 'android') && !startsWith(matrix.platform, 'raspberry') }}
       working-directory: ${{runner.workspace}}/build
       run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE
 
-    - name: Configure CMake ( cross )
+    - name: Configure CMake ( cross, Android )
       if: ${{ startsWith(matrix.platform, 'android') }}
       working-directory: ${{runner.workspace}}/build
-      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21  -DCMAKE_ANDROID_NDK=${{github.workspace}}/${{ matrix.ndkversion }}
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Android -DCMAKE_SYSTEM_VERSION=21 -DCMAKE_ANDROID_NDK=${{github.workspace}}/${{ matrix.ndkversion }}
+
+    - name: Configure CMake ( cross, Raspberry )
+      if: ${{ startsWith(matrix.platform, 'raspberry') }}
+      working-directory: ${{runner.workspace}}/build
+      run: cmake ${{ github.workspace }} -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCMAKE_SYSTEM_NAME=Linux -DCMAKE_CXX_COMPILER={{github.workspace}}/raspi-tools/arm-bcm2708/arm-rpi-4.9.3-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
 
     - name: Build
       working-directory: ${{runner.workspace}}/build
